@@ -28,6 +28,7 @@ WINDOW* win_msg;
 int main(int argc, char** argv)
 {
 	int act;
+	int ret;
 	pthread_t tid;
 
 	if (argc != 2) {
@@ -37,11 +38,19 @@ int main(int argc, char** argv)
 
 	init_client();
 
+	#if 0
+	ret = pthread_create(&tid, NULL, msg_wait, NULL);
+	if (ret != 0) {
+		perror("pthread_create");
+		disconnect(argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	#endif
+
 	connect(argv[1]);
 
 	init_chat(&win_text, &win_user, &win_msg);
 
-	// pthread_create(&tid, NULL, msg_wait, NULL);
 	char buf[64];
 
 	while ((act = wgetch(stdscr)) != KEY_F(10)) {

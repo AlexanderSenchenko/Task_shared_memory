@@ -18,30 +18,28 @@ extern int idshm;
 extern int idsem;
 extern void* shmmem;
 
+extern WINDOW* win_text;
+extern WINDOW* win_user;
+extern WINDOW* win_msg;
+
 void* msg_wait(void* ptr)
 {
 	char name[16];
 	struct clientctl* msgcon = (struct clientctl*) shmmem;
-	int val;
 
 	struct sembuf wait_unlock_sem2 = {1, 0, 0};
 	struct sembuf lock_sem3 = {2, 1, 0};
 	struct sembuf wait_unlock_sem4 = {3, 0, 0};
 
-	// val = semctl(idsem, 1, GETVAL);
 	semop(idsem, &wait_unlock_sem2, 1); // ожидание 1 разрешения
-	// val = semctl(idsem, 1, GETVAL);
-	// val = semctl(idsem, 2, GETVAL);
 	semop(idsem, &lock_sem3, 1);
-	// val = semctl(idsem, 2, GETVAL);
-	// val = semctl(idsem, 3, GETVAL);
 	semop(idsem, &wait_unlock_sem4, 1); // ожидание 2 разрешения
-	// val = semctl(idsem, 3, GETVAL);
 
-	// read new user
 	strncpy(name, msgcon->name, 16);
-	printf("%s\n", name);
 
 	semop(idsem, &lock_sem3, 1);
-	printf("End read\n");
+
+	wmove(win_user, 0, 0);
+	wprintw(win_user, "%s", name);
+	wrefresh(win_user);
 }
