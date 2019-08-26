@@ -3,5 +3,8 @@
 
 void connect(char* name);
 void disconnect(char* name);
+void send_message(char* buf, char* name);
+void add_sym(char* buf, int ch);
+void del_sym(char* buf);
 
 #endif

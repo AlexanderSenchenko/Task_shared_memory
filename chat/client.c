@@ -42,12 +42,23 @@ int main(int argc, char** argv)
 	init_chat(&win_text, &win_user, &win_msg);
 
 	// pthread_create(&tid, NULL, msg_wait, NULL);
+	char buf[64];
 
 	while ((act = wgetch(stdscr)) != KEY_F(10)) {
-
+		switch (act) {
+			case 10: // Enter
+				send_message(buf, argv[1]);
+				break;
+			case KEY_BACKSPACE:
+				del_sym(buf);
+				break;
+			default:
+				add_sym(buf, act);
+				break;
+		}
 	}
 
-	pthread_cancel(tid);
+	// pthread_cancel(tid);
 
 	disconnect(argv[1]);
 

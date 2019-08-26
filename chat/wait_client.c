@@ -46,6 +46,9 @@ void* wait_client(void* ptr)
 
 				count_node = get_count_node();
 				break;
+			case CTL_MSG:
+				recive_message();
+				break;
 			default:
 				break;
 		}
@@ -82,4 +85,25 @@ void sig_add_new_user(int count_node)
 	semop(idsem, &lock_sem4, 1); // блокирю семафор
 
 	printf("End read new user\n");
+}
+
+void recive_message()
+{
+	struct clientctl* ptr = (struct clientctl*) shmmem;
+	struct message* msg = (struct message*) (ptr + 1);
+	char name[16];
+	char buf[64];
+	struct sembuf lock_sem5 = {4, -2, 0};
+	struct sembuf unlock_sem5 = {4, -1, 0};
+
+	semop(idsem, &lock_sem5, 1);
+
+	#if 1
+	strncpy(name, msg->name, 16);
+	strncpy(buf, msg->msg, msg->size);
+	#endif
+
+	semop(idsem, &unlock_sem5, 1);
+
+	printf("%s: %s\n", name, buf);
 }

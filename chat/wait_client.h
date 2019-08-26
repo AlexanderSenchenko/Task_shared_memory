@@ -3,5 +3,6 @@
 
 void* wait_client(void*);
 void sig_add_new_user(int);
+void recive_message();
 
 #endif
